@@ -1,0 +1,66 @@
+1) Agent - Agent Name
+2) User - first name, DOB, address, phone number, state, zip code, email, gender, userType
+3) User's Account - Account Name
+4) Policy Category(LOB) - category_name
+5) Policy Carrier - company_name
+6) Policy Info -  policy number, policy start date, policy end date, policy category, collection id, company collection id, and user id.
+
+//--port 27017 --dbpath  C:\data\db\db0 --replSet rs0 --bind_ip localhost
+run mongodb with replica set
+You have to perform the following tasks based above information:
+
+Task 1:
+
+    1) Create API to upload the attached XLSX/CSV data into MongoDB. //gofigure
+    (Please accomplish this using worker threads)//upload each info in new collection based on point4
+
+    2) Search API to find policy info with the help of the username.
+    //in user collection aggregate(match{username:"alex"},lookup{policyInfo_id,userId,data}) //use regex to find username
+    3) API to provide aggregated policy by each user.
+    //$group to group by userId and project only policy details,lookup username 
+    4) Consider each info as a different collection in MongoDB (Agent, User, User's Account, LOB, Carrier, Policy).
+
+
+Task 2:
+
+    1) Track real-time CPU utilization of the node server and on 70% usage restart the server.//gofigure
+    2) Create a post-service that takes the message, day, and time in body parameters and it inserts that message into DB at that particular day and time.
+
+https://docs.mongodb.com/manual/reference/method/db.collection.watch/
+    INSTRUCTION TO PERFORM TASK 2 (ii) PART
+    Task 2 => 2 ) This task is independent of the above task. You can have two collections, collection1 and collection 2. On post request, a message and timestamp will get saved into the collection 1 and a job will be 
+    scheduled on the timestamp which transfers the message from collection 1 to collection 2
+
+    In case, if you face some queries, you can draft us a mail mentioning all the queries so that we can provide you with better clarity before you starting the assignment. 
+
+    Please upload the assignment to GitHub and share the link with us.
+    Please follow the deadline for this assessment: 6th Sept 2021
+
+Regards,
+
+Tarun,
+
+HR, InsuredMine
+
+https://www.npmjs.com/package/agenda
+this should work
+agenda.define(
+  "send email report",
+  { priority: "high", concurrency: 10 },
+  async (job) => {
+    const { to } = job.attrs.data;
+    await emailClient.send({
+      to,
+      from: "example@example.com",
+      subject: "Email Report",
+      body: "...",
+    });
+  }
+);
+
+(async function () {
+  await agenda.start();
+  await agenda.schedule("in 20 minutes", "send email report", {
+    to: "admin@example.com",
+  });
+})();
